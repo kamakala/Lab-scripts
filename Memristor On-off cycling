@@ -1,0 +1,102 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+pd.set_option('display.max_rows', None)
+bin = []
+# Functions for clarity
+def collecting(x):
+       counter = 0
+       flip = 0
+       timer = 6.001
+       for i in range(20000):
+              if (data.iat[i,0]  >  timer) and (data.iat[i,0] < timer + 0.24):
+                     low.append(data.iat[i,1])
+              elif (data.iat[i,0]  >  timer + 6.25) and (data.iat[i,0] < timer + 6.24):
+                     high.append(data.iat[i, 1])
+              else:
+                     pass
+              timer += 12.5
+
+def averaging(x, y, z):
+       counter = 0
+       for i in x:
+              y.append(i)
+              counter += 1
+              if counter == 17:
+                     z.append(np.mean(y))
+                     y = []
+                     counter = 0
+
+path = "C:\\Users\\moogl\\Desktop\\Cienkie warstwy\\Cienkie warstwy\\CW\\14-06-21\\impulsowe\\9\\1.txt"
+
+data = pd.read_csv(path, delimiter='\t', names=['1', '2'], skiprows=1)
+data = data.replace(',','.', regex=True)
+x = data['1']
+x = x.astype(float)
+y = data['2']
+y = y.astype(float)
+data = {'time':x, 'current':y}
+data = pd.DataFrame(data)
+
+#print(data.head(3000))
+
+#for i in data.index.values:
+#       print(i)
+
+#print(data.iloc[:10001])
+#print(x.iloc[:1000])
+
+#plt.plot(x.iloc[:20000], y.iloc[:20000])
+#plt.plot(x)
+#plt.show()
+# Data bins
+Cycles = data
+low = []
+high = []
+high_bin = []
+high_mean = []
+low_bin = []
+low_mean = []
+timer = 6
+counter = 0
+for i in range(500000):
+       if data.iat[i, 0] < timer:
+              pass
+       elif (data.iat[i, 0] > timer + 0.05) and (data.iat[i, 0] < timer + 0.23):
+              low.append(data.iat[i, 1])
+       elif (data.iat[i, 0] > timer + 6.3) and (data.iat[i, 0] < timer + 6.48):
+              high.append(data.iat[i, 1])
+       elif data.iat[i, 0] > timer + 6.5:
+              timer += 12.5
+
+low_pd = pd.Series(low)
+high_pd = pd.Series(high)
+
+#print(low_pd.head(500))
+
+#collecting(data['time'])
+
+
+averaging(high, high_bin, high_mean)
+averaging(low, low_bin, low_mean)
+
+
+# Plotting
+
+x = np.arange(101)
+
+# data saving
+print("high")
+high_mean = high_mean[:101]
+print(np.shape(high_mean))
+print('low')
+
+print(np.shape(low_mean))
+plt.scatter(x, high_mean)
+plt.scatter(x, low_mean)
+plt.show()
+all_data = {'high':high_mean, 'low':low_mean}
+df = pd.DataFrame(all_data)
+#print(df)
+df.to_csv("D:\\Doc\Granty\\preludium\\Wykonanie projektu\\keithley\\5\\Zebrane.csv")
