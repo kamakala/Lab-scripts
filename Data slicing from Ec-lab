@@ -1,0 +1,38 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import os
+
+pd.set_option('display.max_rows', None)
+
+path = "D:\\Doc\\Projekty\\MAESTRO\\16-11-2021\\nr13_szumy co 0,1V"
+os.chdir(path)
+
+data = pd.read_csv("4.txt", delimiter='\t', names=['1', '2'], skiprows=1)
+data = data.replace(',','.', regex=True)
+x = data['1']
+x = x.astype(float)
+y = data['2']
+y = y.astype(float)
+data = {'time':x, 'current':y}
+data = pd.DataFrame(data)
+
+data.loc[:,"time"] = data.loc[:,"time"] - data.loc[0,"time"]
+#print(data.head())
+
+def Slicing(df, x, y):
+    data_slice = df[df["time"].between(x, y)]
+    return data_slice
+
+start = 0
+stop = 100
+
+for i in range(10):
+    data_to_norm = Slicing(data, start, stop)
+    data_to_norm = data_to_norm.reset_index(drop=True)
+    data_to_norm.loc[:, "time"] = data_to_norm.loc[:, "time"] - data_to_norm.loc[0, "time"]
+    data_to_norm.to_csv("data_{}.txt".format(i), index=False, sep='\t', header=False)
+    start += 100
+    stop += 100
+
+# plt.plot(data.loc[:,"time"], data.loc[:,"current"])
+# plt.show()
