@@ -1,0 +1,42 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+pd.set_option('display.max_rows', None)
+current = []
+
+# Functions for clarity
+def collecting(x):
+    timer = 0.15
+    for i in range(x.shape[0]):
+        if (x.iat[i, 0] > timer - 0.005) and (x.iat[i, 0] < timer + 0.005):
+            current.append(x.iat[i, 1])
+            timer += 2.00159894736842105263157894736842
+            #print(timer)
+
+path = "D:\\Doc\\Granty\\preludium\\Wykonanie projektu\\memrystywne\\impulsowe\\cwm2\\09-12-21\\imp\\2.txt"
+
+data = pd.read_csv(path, delimiter='\t', names=['1', '2'], skiprows=1)
+data = data.replace(',','.', regex=True)
+data = data.astype(float)
+
+data.iloc[:, 0] = data.iloc[:, 0] - data.iloc[0, 0]
+
+# print(data.tail(30))
+collecting(data)
+# plt.plot(current)
+# plt.show()
+# print(data.shape)
+#
+df = pd.DataFrame(current)
+# print(df.tail(30))
+df.to_csv("D:\\Doc\\Granty\\preludium\\Wykonanie projektu\\memrystywne\\impulsowe\\cwm2\\09-12-21\\imp\\2_zebrane.txt", index=False, sep='\t', header=False)
+
+# x = data['1']
+# x = x.astype(float)
+# y = data['2']
+# y = y.astype(float)
+#
+# plt.scatter(x.iloc[:], y.iloc[:])
+# # plt.plot(x)
+# plt.show()
