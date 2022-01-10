@@ -1,0 +1,55 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import os
+import numpy as np
+
+path = "D:\\Doc\\Projekty\\MAESTRO\\Analiza szumu\\POPRAWKI\\export -0,9 do 0"
+os.chdir(path)
+
+
+# get frequencies of interest
+def Slicing(df, x, y):
+    data_slice = df[df["frequency"].between(x, y)]
+    return data_slice
+
+
+# get amplitudes of interest
+def ExtractingValues(df, x, y):
+    amplitude_slice = df[df["frequency"].between(x, x + y)]
+    return amplitude_slice
+
+
+# get data to dataframe
+for i in range(10):
+    data = pd.read_csv("{}.txt".format(i), delimiter='\t', names=['frequency', 'amplitude'])
+    data = data.replace(',', '.', regex=True)
+    data = data.astype(float)
+
+    data = Slicing(data, 1000, 50005)
+
+    # calculate frequencies - log to lin scale change
+    start = 1000
+    stop = 50000
+    n = 50
+    k = ((stop / start) ** (1 / (n - 1)))
+    linear_frequencies = []
+    for j in range(n):
+        linear_frequencies.append(start * k ** j)
+
+    # amplitude_points = []
+    # x = ExtractingValues(data, 1000, 2)
+    # x = x.iat[0,1]
+    # print(x)
+
+    amplitude_list = []
+
+    for z in linear_frequencies:
+        amplitude_points = ExtractingValues(data, z, 2)
+        try:
+            amplitude_list.append(amplitude_points.iat[0, 1])
+        except:
+            print("IndexError in file nr {}".format(i))
+            pass
+
+    lin_data = pd.DataFrame(list(zip(linear_frequencies, amplitude_list)), columns=['frequency', 'amplitude'])
+    lin_data.to_csv('lin_{}.txt'.format(i), index=False, sep='\t', header=False)
