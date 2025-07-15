@@ -28,7 +28,7 @@ def averaging(x, y, z):
                      y = []
                      counter = 0
 
-path = "C:\\Users\\moogl\\Desktop\\Cienkie warstwy\\Cienkie warstwy\\CW\\14-06-21\\impulsowe\\9\\1.txt"
+path = "enter\\path\\here"
 
 data = pd.read_csv(path, delimiter='\t', names=['1', '2'], skiprows=1)
 data = data.replace(',','.', regex=True)
